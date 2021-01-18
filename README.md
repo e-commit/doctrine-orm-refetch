@@ -2,7 +2,7 @@
 
 This library allows to re-fetch Doctrine ORM objects after clear the object manager.
 
-[![Build Status](https://travis-ci.com/e-commit/doctrine-orm-refetch.svg?branch=master)](https://travis-ci.com/e-commit/doctrine-orm-refetch)
+![Tests](https://github.com/e-commit/doctrine-orm-refetch/workflows/Tests/badge.svg)
 
 ## Installation ##
 
