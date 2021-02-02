@@ -9,7 +9,7 @@ This library allows to re-fetch Doctrine ORM objects after clear the object mana
 To install doctrine-orm-refetch with Composer just run :
 
 ```bash
-$ composer require ecommit/doctrine-orm-refetch:1.*@dev
+$ composer require ecommit/doctrine-orm-refetch
 ```
 
 ## Usage ##
@@ -19,7 +19,7 @@ Create the utility (`$entityManager` is the Doctrine ORM entity manager):
 ```php
 use Ecommit\DoctrineOrmRefetch\RefetchManager;
 
-$refetchManager = Ecommit\DoctrineOrmRefetch\RefetchManager::create($entityManager);
+$refetchManager = RefetchManager::create($entityManager);
 ```
 
 ### Refetch an object ###
