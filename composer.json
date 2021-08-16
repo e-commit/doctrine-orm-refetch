@@ -22,6 +22,7 @@
         "doctrine/orm": "^2.7"
     },
     "require-dev": {
+        "doctrine/cache": "^1.11",
         "doctrine/data-fixtures": "^1.4.1",
         "fakerphp/faker": "^1.9",
         "friendsofphp/php-cs-fixer": "^2.17.1",
