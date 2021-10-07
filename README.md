@@ -76,6 +76,7 @@ $collection = $refetchManager->getCollectionFromCriteria($criteria, 'MyClass');
 Example:
 
 ```php
+use Doctrine\Common\Collections\Criteria;
 use Ecommit\DoctrineOrmRefetch\RefetchManager;
 
 $refetchManager = RefetchManager::create($entityManager);
