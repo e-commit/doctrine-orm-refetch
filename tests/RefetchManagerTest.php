@@ -66,16 +66,16 @@ class RefetchManagerTest extends AbstractTest
         /** @var Book $book */
         $book = $this->em->getRepository(Book::class)->find(6);
         $this->assertNotNull($book);
-        $this->assertEquals(2, $this->countObjectsInUnitOfWork()); //Book + category (lazy association)
+        $this->assertEquals(2, $this->countObjectsInUnitOfWork()); // Book + category (lazy association)
 
         $categoryName = $book->getCategory()->getName();
-        $this->assertEquals(2, $this->countObjectsInUnitOfWork()); //Nothing new
+        $this->assertEquals(2, $this->countObjectsInUnitOfWork()); // Nothing new
 
         $authors = $book->getAuthors();
-        $this->assertEquals(2, $this->countObjectsInUnitOfWork()); //Nothing new
+        $this->assertEquals(2, $this->countObjectsInUnitOfWork()); // Nothing new
 
         $firstLastName = $authors->first()->getFirstName();
-        $this->assertEquals(5, $this->countObjectsInUnitOfWork()); //+ 3 authors (lazy association collection - collection is populated the first time its accessed)
+        $this->assertEquals(5, $this->countObjectsInUnitOfWork()); // + 3 authors (lazy association collection - collection is populated the first time its accessed)
 
         $this->em->clear();
         $this->assertEquals(0, $this->countObjectsInUnitOfWork());
@@ -83,29 +83,29 @@ class RefetchManagerTest extends AbstractTest
         /** @var Author $author */
         $author = $this->em->getRepository(Author::class)->find(4);
         $this->assertNotNull($author);
-        $this->assertEquals(1, $this->countObjectsInUnitOfWork()); //Author
+        $this->assertEquals(1, $this->countObjectsInUnitOfWork()); // Author
 
         $books = $author->getBooks();
-        $this->assertEquals(1, $this->countObjectsInUnitOfWork()); //Nothing new
+        $this->assertEquals(1, $this->countObjectsInUnitOfWork()); // Nothing new
 
         $firstTitle = $books->first()->getTitle();
-        $this->assertEquals(7, $this->countObjectsInUnitOfWork()); //+ 4 books (lazy association collection) + 2 categories
+        $this->assertEquals(7, $this->countObjectsInUnitOfWork()); // + 4 books (lazy association collection) + 2 categories
 
         $firstCategoryName = $book->getCategory()->getName();
-        $this->assertEquals(7, $this->countObjectsInUnitOfWork()); //Nothing new
+        $this->assertEquals(7, $this->countObjectsInUnitOfWork()); // Nothing new
 
         $this->em->clear();
         $this->assertEquals(0, $this->countObjectsInUnitOfWork());
 
         $book1Sales = $this->em->getRepository(Sale::class)->findBy(['book' => 1]);
         $this->assertCount(2, $book1Sales);
-        $this->assertEquals(3, $this->countObjectsInUnitOfWork()); //2 sales + 1 book
+        $this->assertEquals(3, $this->countObjectsInUnitOfWork()); // 2 sales + 1 book
 
         $book = $book1Sales[0]->getBook();
-        $this->assertEquals(3, $this->countObjectsInUnitOfWork()); //Nothing new
+        $this->assertEquals(3, $this->countObjectsInUnitOfWork()); // Nothing new
 
         $category = $book->getCategory();
-        $this->assertEquals(4, $this->countObjectsInUnitOfWork()); //+ category
+        $this->assertEquals(4, $this->countObjectsInUnitOfWork()); // + category
     }
 
     public function testCreate(): void
@@ -295,12 +295,12 @@ class RefetchManagerTest extends AbstractTest
     {
         $entityManager = $this->em;
 
-        //Example in README.md - Beginning
+        // Example in README.md - Beginning
 
         $refetchManager = RefetchManager::create($entityManager);
 
         $author = $entityManager->getRepository(Author::class)->find(1);
-        $this->assertNotNull($author); //Remove this line in Example
+        $this->assertNotNull($author); // Remove this line in Example
 
         $queryBuilder = $entityManager->getRepository(Book::class)->createQueryBuilder('b');
         $queryBuilder->select('b')
@@ -319,25 +319,25 @@ class RefetchManagerTest extends AbstractTest
             }
 
             if (0 === $i % 2) {
-                //$author is managed
+                // $author is managed
                 $entityManager->flush();
                 $entityManager->clear();
-                //$author is not managed
-                $this->assertEquals(0, $this->countObjectsInUnitOfWork()); //Remove this line in Example
-                if ($useRefetchObjectMethod) { //Remove this line in Example
-                    $refetchManager->refetchObject($author); //Remove this line in Example
-                } else { //Remove this line in Example
+                // $author is not managed
+                $this->assertEquals(0, $this->countObjectsInUnitOfWork()); // Remove this line in Example
+                if ($useRefetchObjectMethod) { // Remove this line in Example
+                    $refetchManager->refetchObject($author); // Remove this line in Example
+                } else { // Remove this line in Example
                     $author = $refetchManager->getObject($author);
-                } //Remove this line in Example
-                //$author is managed
-                $this->assertEquals(1, $this->countObjectsInUnitOfWork()); //Remove this line in Example
+                } // Remove this line in Example
+                // $author is managed
+                $this->assertEquals(1, $this->countObjectsInUnitOfWork()); // Remove this line in Example
             }
         }
 
         $entityManager->flush();
         $entityManager->clear();
 
-        //Example in README.md - End
+        // Example in README.md - End
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->em->getRepository(Book::class)->createQueryBuilder('b');
@@ -407,7 +407,7 @@ class RefetchManagerTest extends AbstractTest
         $author->setLastName('My new last name');
         $this->em->flush($author);
 
-        $countAuthors = $book->getAuthors()->count(); //(lazy association collection
+        $countAuthors = $book->getAuthors()->count(); // (lazy association collection
         $author->setLastName('My new last name');
         $this->em->flush($author);
         $this->checkUnitOfWork(2, [$book, $author]);
@@ -515,14 +515,14 @@ class RefetchManagerTest extends AbstractTest
     {
         $entityManager = $this->em;
 
-        //Example in README.md - Beginning
+        // Example in README.md - Beginning
 
         $refetchManager = RefetchManager::create($entityManager);
 
         $ctiteria = Criteria::create()
             ->andWhere(Criteria::expr()->gt('authorId', 2));
         $authors = $refetchManager->getCollectionFromCriteria($ctiteria, Author::class);
-        $this->assertCount(2, $authors); //Remove this line in Example
+        $this->assertCount(2, $authors); // Remove this line in Example
 
         $queryBuilder = $entityManager->getRepository(Book::class)->createQueryBuilder('b');
         $queryBuilder->select('b')
@@ -546,14 +546,14 @@ class RefetchManagerTest extends AbstractTest
                 $entityManager->flush();
                 $entityManager->clear();
                 $authors = $refetchManager->getCollectionFromCriteria($ctiteria, Author::class);
-                $this->assertEquals(0, $this->countObjectsInUnitOfWork()); //Remove this line in Example
+                $this->assertEquals(0, $this->countObjectsInUnitOfWork()); // Remove this line in Example
             }
         }
 
         $entityManager->flush();
         $entityManager->clear();
 
-        //Example in README.md - End
+        // Example in README.md - End
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->em->getRepository(Book::class)->createQueryBuilder('b');
