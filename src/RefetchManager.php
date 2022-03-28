@@ -25,7 +25,7 @@ class RefetchManager
     /**
      * @var EntityManagerInterface
      */
-    protected $entityManager;
+    private $entityManager;
 
     public static function create(EntityManagerInterface $entityManager): self
     {
