@@ -1,7 +1,7 @@
 {
     "name": "ecommit/doctrine-orm-refetch",
-    "description": "Refetch ORM Doctrine objects.",
-    "keywords": ["doctrine", "refetch"],
+    "description": "Refetch ORM Doctrine objects. Or detach all entities attached since a snapshot",
+    "keywords": ["doctrine", "refetch", "snapshot"],
     "type": "library",
     "license": "MIT",
     "authors": [
