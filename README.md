@@ -1,6 +1,8 @@
 # Doctrine ORM Refetch
 
-This library allows to re-fetch Doctrine ORM objects after clear the object manager.
+This library allows to 
+* re-fetch Doctrine ORM objects after clear the object manager
+* detach all entities attached since a snapshot
 
 ![Tests](https://github.com/e-commit/doctrine-orm-refetch/workflows/Tests/badge.svg)
 
@@ -111,6 +113,47 @@ foreach ($iterableResult as $row) {
 
 $entityManager->flush();
 $entityManager->clear();
+```
+
+### Snapshot ###
+
+Detach all entities attached since a snapshot (entities attached before the snapshot are kept)
+
+```php
+use Ecommit\DoctrineOrmRefetch\SnapshotManager;
+
+$snapshotManager = SnapshotManager::create($entityManager);
+
+$author = $entityManager->getRepository(Author::class)->find(1);
+
+$snapshotManager->snapshot();
+
+$queryBuilder = $entityManager->getRepository(Book::class)->createQueryBuilder('b');
+$queryBuilder->select('b')
+    ->andWhere('b.bookId != :bookId')
+    ->setParameter('bookId', 7);
+$iterableResult = $queryBuilder->getQuery()->iterate();
+
+$i = 0;
+foreach ($iterableResult as $row) {
+    ++$i;
+    /** @var Book $book */
+    $book = current($row);
+
+    if (!$book->getAuthors()->contains($author)) {
+        $book->addAuthor($author);
+    }
+
+    if (0 === $i % 2) {
+        // $author and $book are managed
+        $entityManager->flush();
+        $snapshotManager->clear(); // Detach all entities attached since the snapshot
+        // Only $author is managed
+    }
+}
+
+$entityManager->flush();
+$snapshotManager->clear();
 ```
 
 
