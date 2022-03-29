@@ -20,7 +20,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Utility\IdentifierFlattener;
 use Ecommit\DoctrineOrmRefetch\Exception\EntityNotFoundException;
 
-class RefetchManager
+final class RefetchManager
 {
     /**
      * @var EntityManagerInterface

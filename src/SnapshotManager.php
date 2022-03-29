@@ -16,7 +16,7 @@ namespace Ecommit\DoctrineOrmRefetch;
 use Doctrine\ORM\EntityManagerInterface;
 use Ecommit\DoctrineOrmRefetch\Exception\SnapshotNotDoneException;
 
-class SnapshotManager
+final class SnapshotManager
 {
     /**
      * @var EntityManagerInterface
