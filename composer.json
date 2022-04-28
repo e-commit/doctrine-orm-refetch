@@ -23,11 +23,12 @@
         "doctrine/orm": "^2.7"
     },
     "require-dev": {
-        "doctrine/cache": "^1.11",
+        "doctrine/cache": "^1.11|^2.0",
         "doctrine/data-fixtures": "^1.4.1",
         "fakerphp/faker": "^1.9",
         "friendsofphp/php-cs-fixer": "^3.0",
-        "phpunit/phpunit": "^8.4"
+        "phpunit/phpunit": "^8.4",
+        "symfony/cache": "*"
     },
     "extra": {
         "branch-alias": {
