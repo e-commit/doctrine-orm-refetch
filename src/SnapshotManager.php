@@ -23,6 +23,9 @@ final class SnapshotManager
      */
     private $entityManager;
 
+    /**
+     * @var array|null
+     */
     private $snapshot;
 
     public static function create(EntityManagerInterface $entityManager): self
@@ -53,6 +56,7 @@ final class SnapshotManager
 
         $identityMap = $this->entityManager->getUnitOfWork()->getIdentityMap();
         foreach ($identityMap as $class => $objects) {
+            /** @var object $object */
             foreach ($objects as $id => $object) {
                 if (!\array_key_exists($class, $this->snapshot) || !\array_key_exists($id, $this->snapshot[$class])) {
                     $this->entityManager->detach($object);

@@ -28,7 +28,8 @@
         "fakerphp/faker": "^1.9",
         "friendsofphp/php-cs-fixer": "^3.0",
         "phpunit/phpunit": "^8.4",
-        "symfony/cache": "*"
+        "symfony/cache": "*",
+        "vimeo/psalm": "^4.23"
     },
     "extra": {
         "branch-alias": {

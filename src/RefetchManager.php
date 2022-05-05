@@ -54,7 +54,10 @@ final class RefetchManager
         return $newObject;
     }
 
-    public function getCollectionFromCriteria(Criteria $criteria, $class): Collection
+    /**
+     * @psalm-param class-string $class
+     */
+    public function getCollectionFromCriteria(Criteria $criteria, string $class): Collection
     {
         return $this->entityManager->getRepository($class)->matching($criteria);
     }
@@ -71,6 +74,7 @@ final class RefetchManager
 
     protected function getIdentifierFlattener(): IdentifierFlattener
     {
+        /** @psalm-suppress InvalidArgument */
         return new IdentifierFlattener($this->entityManager->getUnitOfWork(), $this->entityManager->getMetadataFactory());
     }
 }

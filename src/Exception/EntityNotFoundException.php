@@ -15,7 +15,7 @@ namespace Ecommit\DoctrineOrmRefetch\Exception;
 
 class EntityNotFoundException extends \Exception implements ExceptionInterface
 {
-    public static function fromClassNameAndIdentifier($className, array $id)
+    public static function fromClassNameAndIdentifier(string $className, array $id): self
     {
         $ids = [];
 
