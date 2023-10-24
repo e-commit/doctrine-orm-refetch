@@ -17,7 +17,7 @@ use Doctrine\ORM\UnitOfWork;
 use Ecommit\DoctrineOrmRefetch\Tests\App\Doctrine;
 use PHPUnit\Framework\TestCase;
 
-abstract class AbstractTest extends TestCase
+abstract class AbstractTestCase extends TestCase
 {
     protected function countObjectsInUnitOfWork(): int
     {

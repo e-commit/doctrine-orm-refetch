@@ -27,8 +27,9 @@ use Ecommit\DoctrineOrmRefetch\Tests\App\Entity\Author;
 use Ecommit\DoctrineOrmRefetch\Tests\App\Entity\Book;
 use Ecommit\DoctrineOrmRefetch\Tests\App\Entity\Category;
 use Ecommit\DoctrineOrmRefetch\Tests\App\Entity\Sale;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class RefetchManagerTest extends AbstractTest
+class RefetchManagerTest extends AbstractTestCase
 {
     /**
      * @var EntityManagerInterface
@@ -111,7 +112,7 @@ class RefetchManagerTest extends AbstractTest
     public function testCreate(): void
     {
         $refetchManager = RefetchManager::create($this->em);
-        $this->assertEquals(RefetchManager::class, \get_class($refetchManager));
+        $this->assertEquals(RefetchManager::class, $refetchManager::class);
     }
 
     public function testGetEntityManager(): void
@@ -119,9 +120,7 @@ class RefetchManagerTest extends AbstractTest
         $this->assertSame($this->em, $this->refetchManager->getEntityManager());
     }
 
-    /**
-     * @dataProvider getUseRefetchObjectMethodProdiver
-     */
+    #[DataProvider('getUseRefetchObjectMethodProdiver')]
     public function testOneObjectWithoutClear($useRefetchObjectMethod): void
     {
         /** @var Book $book */
@@ -138,9 +137,7 @@ class RefetchManagerTest extends AbstractTest
         $this->assertEquals(6, $book->getBookId());
     }
 
-    /**
-     * @dataProvider getUseRefetchObjectMethodProdiver
-     */
+    #[DataProvider('getUseRefetchObjectMethodProdiver')]
     public function testOneObjectWithClear($useRefetchObjectMethod): void
     {
         /** @var Book $book */
@@ -158,9 +155,7 @@ class RefetchManagerTest extends AbstractTest
         $this->assertEquals(6, $book->getBookId());
     }
 
-    /**
-     * @dataProvider getUseRefetchObjectMethodProdiver
-     */
+    #[DataProvider('getUseRefetchObjectMethodProdiver')]
     public function testOneObjectWithClearAndLazyAssociation($useRefetchObjectMethod): void
     {
         /** @var Book $book */
@@ -189,9 +184,7 @@ class RefetchManagerTest extends AbstractTest
         $this->assertEquals($category->getCategoryId(), $book->getCategory()->getCategoryId());
     }
 
-    /**
-     * @dataProvider getUseRefetchObjectMethodProdiver
-     */
+    #[DataProvider('getUseRefetchObjectMethodProdiver')]
     public function testOneObjectWithClearAndCollection($useRefetchObjectMethod): void
     {
         /** @var Book $book */
@@ -210,9 +203,7 @@ class RefetchManagerTest extends AbstractTest
         $this->checkUnitOfWork(4, [$book, $book->getCategory()]);
     }
 
-    /**
-     * @dataProvider getUseRefetchObjectMethodProdiver
-     */
+    #[DataProvider('getUseRefetchObjectMethodProdiver')]
     public function testChangesBeforeClearNotFlushed($useRefetchObjectMethod): void
     {
         $book = $this->createObjectInTestRefetchChangesNotFlushed();
@@ -266,9 +257,7 @@ class RefetchManagerTest extends AbstractTest
         $this->checkUnitOfWork($expectedInUnitOfWork, [$book, $book->getCategory()]);
     }
 
-    /**
-     * @dataProvider getUseRefetchObjectMethodProdiver
-     */
+    #[DataProvider('getUseRefetchObjectMethodProdiver')]
     public function testChangesAfterClearNotFlushed($useRefetchObjectMethod): void
     {
         $book = $this->createObjectInTestRefetchChangesNotFlushed();
@@ -288,9 +277,7 @@ class RefetchManagerTest extends AbstractTest
         $this->checkObjectInTestRefetchChangesNotFlushed($book, $oldTitle, 7);
     }
 
-    /**
-     * @dataProvider getUseRefetchObjectMethodProdiver
-     */
+    #[DataProvider('getUseRefetchObjectMethodProdiver')]
     public function testInIterate($useRefetchObjectMethod): void
     {
         $entityManager = $this->em;
@@ -350,9 +337,7 @@ class RefetchManagerTest extends AbstractTest
         $this->assertEquals(9, $count);
     }
 
-    /**
-     * @dataProvider getUseRefetchObjectMethodProdiver
-     */
+    #[DataProvider('getUseRefetchObjectMethodProdiver')]
     public function testNotManagedObject($useRefetchObjectMethod): void
     {
         /** @var Author $author1 */
@@ -377,14 +362,12 @@ class RefetchManagerTest extends AbstractTest
         $this->em->flush();
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectErrorMessage('new entity was found through the relationship');
+        $this->expectExceptionMessage('new entity was found through the relationship');
         $book->addAuthor($author2);
         $this->em->flush();
     }
 
-    /**
-     * @dataProvider getUseRefetchObjectMethodProdiver
-     */
+    #[DataProvider('getUseRefetchObjectMethodProdiver')]
     public function testIndirectRefetch($useRefetchObjectMethod): void
     {
         /** @var Author $author */
@@ -403,7 +386,7 @@ class RefetchManagerTest extends AbstractTest
         }
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectErrorMessage('Entity has to be managed');
+        $this->expectExceptionMessage('Entity has to be managed');
         $author->setLastName('My new last name');
         $this->em->flush($author);
 
@@ -413,9 +396,7 @@ class RefetchManagerTest extends AbstractTest
         $this->checkUnitOfWork(2, [$book, $author]);
     }
 
-    /**
-     * @dataProvider getUseRefetchObjectMethodProdiver
-     */
+    #[DataProvider('getUseRefetchObjectMethodProdiver')]
     public function testWithCompositePk($useRefetchObjectMethod): void
     {
         /** @var Sale $sale */
@@ -435,13 +416,11 @@ class RefetchManagerTest extends AbstractTest
         $this->assertEquals(2019, $sale->getYear());
     }
 
-    /**
-     * @dataProvider getUseRefetchObjectMethodProdiver
-     */
+    #[DataProvider('getUseRefetchObjectMethodProdiver')]
     public function testWithBadObject($useRefetchObjectMethod): void
     {
         $this->expectException(MappingException::class);
-        $this->expectErrorMessage('Class "stdClass" is not a valid entity or mapped super class');
+        $this->expectExceptionMessage('Class "stdClass" is not a valid entity or mapped super class');
         $object = new \stdClass();
         if ($useRefetchObjectMethod) {
             $this->refetchManager->refetchObject($object);
@@ -450,9 +429,7 @@ class RefetchManagerTest extends AbstractTest
         }
     }
 
-    /**
-     * @dataProvider getUseRefetchObjectMethodProdiver
-     */
+    #[DataProvider('getUseRefetchObjectMethodProdiver')]
     public function testWithDeletedEntity($useRefetchObjectMethod): void
     {
         /** @var Author $author */
@@ -484,7 +461,7 @@ class RefetchManagerTest extends AbstractTest
 
         $books = $this->refetchManager->getCollectionFromCriteria($criteria, Book::class);
 
-        $this->assertEquals(LazyCriteriaCollection::class, \get_class($books));
+        $this->assertEquals(LazyCriteriaCollection::class, $books::class);
         $this->assertEquals(1, $this->countObjectsInUnitOfWork());
         $this->assertCount(5, $books);
         $firstTitle = $books->first()->getTitle();
@@ -504,7 +481,7 @@ class RefetchManagerTest extends AbstractTest
 
         $books = $this->refetchManager->getCollectionFromCriteria($criteria, Book::class);
 
-        $this->assertEquals(LazyCriteriaCollection::class, \get_class($books));
+        $this->assertEquals(LazyCriteriaCollection::class, $books::class);
         $this->assertEquals(0, $this->countObjectsInUnitOfWork());
         $this->assertCount(5, $books);
         $firstTitle = $books->first()->getTitle();
@@ -566,7 +543,7 @@ class RefetchManagerTest extends AbstractTest
         $this->assertEquals(18, $count);
     }
 
-    public function getUseRefetchObjectMethodProdiver()
+    public static function getUseRefetchObjectMethodProdiver()
     {
         return [
             [true],

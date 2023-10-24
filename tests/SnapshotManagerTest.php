@@ -21,7 +21,7 @@ use Ecommit\DoctrineOrmRefetch\Tests\App\Doctrine;
 use Ecommit\DoctrineOrmRefetch\Tests\App\Entity\Author;
 use Ecommit\DoctrineOrmRefetch\Tests\App\Entity\Book;
 
-class SnapshotManagerTest extends AbstractTest
+class SnapshotManagerTest extends AbstractTestCase
 {
     /**
      * @var EntityManagerInterface
@@ -49,7 +49,7 @@ class SnapshotManagerTest extends AbstractTest
     public function testCreate(): void
     {
         $refetchManager = SnapshotManager::create($this->em);
-        $this->assertEquals(SnapshotManager::class, \get_class($refetchManager));
+        $this->assertEquals(SnapshotManager::class, $refetchManager::class);
     }
 
     public function testGetEntityManager(): void
@@ -173,7 +173,7 @@ class SnapshotManagerTest extends AbstractTest
         $this->assertNotNull($book);
 
         $this->expectException(SnapshotNotDoneException::class);
-        $this->expectDeprecationMessage('The snapshot was not done');
+        $this->expectExceptionMessage('The snapshot was not done');
 
         $this->snapshotManager->clear();
     }

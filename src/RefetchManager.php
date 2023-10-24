@@ -69,7 +69,7 @@ final class RefetchManager
 
     protected function getObjectMetadata(object $object): ClassMetadata
     {
-        return $this->entityManager->getClassMetadata(\get_class($object));
+        return $this->entityManager->getClassMetadata($object::class);
     }
 
     protected function getIdentifierFlattener(): IdentifierFlattener

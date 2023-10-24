@@ -16,10 +16,11 @@ namespace Ecommit\DoctrineOrmRefetch\Tests\App;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\ORMSetup;
 use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\ORM\Tools\Setup;
 
 class Doctrine
 {
@@ -34,14 +35,15 @@ class Doctrine
             return static::$entityManager;
         }
 
-        $config = Setup::createAnnotationMetadataConfiguration([__DIR__.'/Entity'], true, null, null, false);
-        static::$entityManager = EntityManager::create(
+        $config = ORMSetup::createAttributeMetadataConfiguration([__DIR__.'/Entity'], true);
+        $connection = DriverManager::getConnection(
             [
                 'driver' => 'pdo_sqlite',
                 'memory' => true,
             ],
             $config
         );
+        static::$entityManager = new EntityManager($connection, $config);
 
         return static::$entityManager;
     }

@@ -17,31 +17,21 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="author")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'author')]
 class Author
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer", name="author_id")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer', name: 'author_id')]
     protected $authorId;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     protected $firstName;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     protected $lastName;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="Ecommit\DoctrineOrmRefetch\Tests\App\Entity\Book", mappedBy="authors")
-     */
+    #[ORM\ManyToMany(targetEntity: Book::class, mappedBy: 'authors')]
     protected $books;
 
     public function __construct()

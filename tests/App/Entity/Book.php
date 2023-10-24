@@ -17,41 +17,27 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="book")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'book')]
 class Book
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer", name="book_id")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer', name: 'book_id')]
     protected $bookId;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     protected $title;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Ecommit\DoctrineOrmRefetch\Tests\App\Entity\Category", inversedBy="books")
-     * @ORM\JoinColumn(name="category_id", referencedColumnName="category_id", nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'books')]
+    #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'category_id', nullable: false)]
     protected $category;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="Ecommit\DoctrineOrmRefetch\Tests\App\Entity\Author", inversedBy="books")
-     * @ORM\JoinTable(name="book_author",
-     *     joinColumns={@ORM\JoinColumn(name="book_id", referencedColumnName="book_id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="author_id", referencedColumnName="author_id")}
-     * )
-     */
+    #[ORM\ManyToMany(targetEntity: Author::class, inversedBy: 'books')]
+    #[ORM\JoinColumn(name: 'book_id', referencedColumnName: 'book_id')]
+    #[ORM\InverseJoinColumn(name: 'author_id', referencedColumnName: 'author_id')]
     protected $authors;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Ecommit\DoctrineOrmRefetch\Tests\App\Entity\Sale", mappedBy="book")
-     */
+    #[ORM\OneToMany(targetEntity: Sale::class, mappedBy: 'book')]
     protected $sales;
 
     public function __construct()
