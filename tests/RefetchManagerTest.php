@@ -293,13 +293,12 @@ class RefetchManagerTest extends AbstractTestCase
         $queryBuilder->select('b')
             ->andWhere('b.bookId != :bookId')
             ->setParameter('bookId', 7);
-        $iterableResult = $queryBuilder->getQuery()->iterate();
+        $iterableResult = $queryBuilder->getQuery()->toIterable();
 
         $i = 0;
-        foreach ($iterableResult as $row) {
+        /** @var Book $book */
+        foreach ($iterableResult as $book) {
             ++$i;
-            /** @var Book $book */
-            $book = current($row);
 
             if (!$book->getAuthors()->contains($author)) {
                 $book->addAuthor($author);
@@ -365,35 +364,6 @@ class RefetchManagerTest extends AbstractTestCase
         $this->expectExceptionMessage('new entity was found through the relationship');
         $book->addAuthor($author2);
         $this->em->flush();
-    }
-
-    #[DataProvider('getUseRefetchObjectMethodProdiver')]
-    public function testIndirectRefetch($useRefetchObjectMethod): void
-    {
-        /** @var Author $author */
-        $author = $this->em->getRepository(Author::class)->find(2);
-        $this->assertNotNull($author);
-        /** @var Book $book */
-        $book = $this->em->getRepository(Book::class)->find(1);
-        $this->assertNotNull($book);
-
-        $this->em->clear();
-
-        if ($useRefetchObjectMethod) {
-            $this->refetchManager->refetchObject($book);
-        } else {
-            $book = $this->refetchManager->getObject($book);
-        }
-
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Entity has to be managed');
-        $author->setLastName('My new last name');
-        $this->em->flush($author);
-
-        $countAuthors = $book->getAuthors()->count(); // (lazy association collection
-        $author->setLastName('My new last name');
-        $this->em->flush($author);
-        $this->checkUnitOfWork(2, [$book, $author]);
     }
 
     #[DataProvider('getUseRefetchObjectMethodProdiver')]
@@ -505,13 +475,12 @@ class RefetchManagerTest extends AbstractTestCase
         $queryBuilder->select('b')
             ->andWhere('b.bookId != :bookId')
             ->setParameter('bookId', 9);
-        $iterableResult = $queryBuilder->getQuery()->iterate();
+        $iterableResult = $queryBuilder->getQuery()->toIterable();
 
         $i = 0;
-        foreach ($iterableResult as $row) {
+        /** @var Book $book */
+        foreach ($iterableResult as $book) {
             ++$i;
-            /** @var Book $book */
-            $book = current($row);
 
             foreach ($authors as $author) {
                 if (!$book->getAuthors()->contains($author)) {

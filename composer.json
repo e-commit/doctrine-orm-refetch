@@ -20,7 +20,7 @@
         "php": "^8.1",
         "doctrine/collections": "^1.5|^2.0",
         "doctrine/common": "^2.11|^3.0",
-        "doctrine/orm": "^2.13"
+        "doctrine/orm": "^2.13|^3.0"
     },
     "require-dev": {
         "doctrine/cache": "^1.11|^2.0",

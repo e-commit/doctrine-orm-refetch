@@ -128,13 +128,12 @@ class SnapshotManagerTest extends AbstractTestCase
         $queryBuilder->select('b')
             ->andWhere('b.bookId != :bookId')
             ->setParameter('bookId', 7);
-        $iterableResult = $queryBuilder->getQuery()->iterate();
+        $iterableResult = $queryBuilder->getQuery()->toIterable();
 
         $i = 0;
-        foreach ($iterableResult as $row) {
+        /** @var Book $book */
+        foreach ($iterableResult as $book) {
             ++$i;
-            /** @var Book $book */
-            $book = current($row);
 
             if (!$book->getAuthors()->contains($author)) {
                 $book->addAuthor($author);
