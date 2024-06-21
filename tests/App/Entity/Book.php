@@ -70,7 +70,7 @@ class Book
         return $this->title;
     }
 
-    public function setCategory(Category $category = null): self
+    public function setCategory(?Category $category = null): self
     {
         $this->category = $category;
 

@@ -31,7 +31,7 @@ class Sale
     #[ORM\Column(type: 'integer')]
     protected $countSales;
 
-    public function setBook(Book $book = null): self
+    public function setBook(?Book $book = null): self
     {
         $this->book = $book;
 
