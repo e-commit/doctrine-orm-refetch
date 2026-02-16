@@ -20,6 +20,7 @@ jobs:
                     -   php-version: '8.2'
                     -   php-version: '8.3'
                     -   php-version: '8.4'
+                    -   php-version: '8.5'
 
                     #CS
                     -   php-version: '8.2'
@@ -27,7 +28,7 @@ jobs:
                         coding-standards: true
 
                     # Dependencies
-                    -   php-version: '8.4'
+                    -   php-version: '8.5'
                         description: 'with Analyze dependencies'
                         analyze-dependencies: true
 
