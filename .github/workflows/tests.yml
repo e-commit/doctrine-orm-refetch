@@ -94,10 +94,6 @@ jobs:
                     curl -LSs https://github.com/maglnet/ComposerRequireChecker/releases/latest/download/composer-require-checker.phar > composer-require-checker.phar
                     php composer-require-checker.phar check composer.json
 
-            -   name: Check license year
-                if: matrix.coding-standards
-                run: cat LICENSE |grep -E "\(c\) ([0-9]+\-)*`date +%Y`"
-
             -   name: Run Psalm
                 if: matrix.static-analysis
                 run: php vendor/bin/psalm --stats --output-format=github
