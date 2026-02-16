@@ -26,7 +26,7 @@
         "doctrine/cache": "^1.11|^2.0",
         "doctrine/data-fixtures": "^1.4.1",
         "fakerphp/faker": "^1.9",
-        "friendsofphp/php-cs-fixer": "^3.0",
+        "friendsofphp/php-cs-fixer": "^3.88",
         "phpunit/phpunit": "^10.0",
         "symfony/cache": "*",
         "vimeo/psalm": "^5"
