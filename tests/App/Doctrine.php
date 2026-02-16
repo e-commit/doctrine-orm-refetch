@@ -36,6 +36,9 @@ class Doctrine
         }
 
         $config = ORMSetup::createAttributeMetadataConfiguration([__DIR__.'/Entity'], true);
+        if (PHP_VERSION_ID >= 80400) { // @legacy
+            $config->enableNativeLazyObjects(true);
+        }
         $connection = DriverManager::getConnection(
             [
                 'driver' => 'pdo_sqlite',
