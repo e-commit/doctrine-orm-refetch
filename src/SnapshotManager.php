@@ -24,7 +24,7 @@ final class SnapshotManager
     private $entityManager;
 
     /**
-     * @var array|null
+     * @var array<class-string, array<string, object>>|null
      */
     private $snapshot;
 

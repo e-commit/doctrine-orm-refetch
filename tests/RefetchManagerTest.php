@@ -66,16 +66,18 @@ class RefetchManagerTest extends AbstractTestCase
 
         /** @var Book $book */
         $book = $this->em->getRepository(Book::class)->find(6);
-        $this->assertNotNull($book);
+        self::assertNotNull($book);
         $this->assertEquals(2, $this->countObjectsInUnitOfWork()); // Book + category (lazy association)
 
-        $categoryName = $book->getCategory()->getName();
+        $categoryName = $book->getCategory()?->getName();
         $this->assertEquals(2, $this->countObjectsInUnitOfWork()); // Nothing new
 
         $authors = $book->getAuthors();
         $this->assertEquals(2, $this->countObjectsInUnitOfWork()); // Nothing new
 
-        $firstLastName = $authors->first()->getFirstName();
+        $first = $authors->first();
+        self::assertNotFalse($first);
+        $firstLastName = $first->getFirstName();
         $this->assertEquals(5, $this->countObjectsInUnitOfWork()); // + 3 authors (lazy association collection - collection is populated the first time its accessed)
 
         $this->em->clear();
@@ -89,10 +91,12 @@ class RefetchManagerTest extends AbstractTestCase
         $books = $author->getBooks();
         $this->assertEquals(1, $this->countObjectsInUnitOfWork()); // Nothing new
 
-        $firstTitle = $books->first()->getTitle();
+        $first = $books->first();
+        self::assertNotFalse($first);
+        $firstTitle = $first->getTitle();
         $this->assertEquals(7, $this->countObjectsInUnitOfWork()); // + 4 books (lazy association collection) + 2 categories
 
-        $firstCategoryName = $book->getCategory()->getName();
+        $firstCategoryName = $book->getCategory()?->getName();
         $this->assertEquals(7, $this->countObjectsInUnitOfWork()); // Nothing new
 
         $this->em->clear();
@@ -103,6 +107,7 @@ class RefetchManagerTest extends AbstractTestCase
         $this->assertEquals(3, $this->countObjectsInUnitOfWork()); // 2 sales + 1 book
 
         $book = $book1Sales[0]->getBook();
+        self::assertNotNull($book);
         $this->assertEquals(3, $this->countObjectsInUnitOfWork()); // Nothing new
 
         $category = $book->getCategory();
@@ -121,7 +126,7 @@ class RefetchManagerTest extends AbstractTestCase
     }
 
     #[DataProvider('getUseRefetchObjectMethodProdiver')]
-    public function testOneObjectWithoutClear($useRefetchObjectMethod): void
+    public function testOneObjectWithoutClear(bool $useRefetchObjectMethod): void
     {
         /** @var Book $book */
         $book = $this->em->getRepository(Book::class)->find(6);
@@ -138,7 +143,7 @@ class RefetchManagerTest extends AbstractTestCase
     }
 
     #[DataProvider('getUseRefetchObjectMethodProdiver')]
-    public function testOneObjectWithClear($useRefetchObjectMethod): void
+    public function testOneObjectWithClear(bool $useRefetchObjectMethod): void
     {
         /** @var Book $book */
         $book = $this->em->getRepository(Book::class)->find(6);
@@ -156,12 +161,12 @@ class RefetchManagerTest extends AbstractTestCase
     }
 
     #[DataProvider('getUseRefetchObjectMethodProdiver')]
-    public function testOneObjectWithClearAndLazyAssociation($useRefetchObjectMethod): void
+    public function testOneObjectWithClearAndLazyAssociation(bool $useRefetchObjectMethod): void
     {
         /** @var Book $book */
         $book = $this->em->getRepository(Book::class)->find(6);
         $category = $book->getCategory();
-        $this->assertNotNull($book);
+        self::assertNotNull($category);
         $this->em->clear();
 
         if ($useRefetchObjectMethod) {
@@ -181,11 +186,11 @@ class RefetchManagerTest extends AbstractTestCase
         }
 
         $this->checkUnitOfWork(2, [$book, $category]);
-        $this->assertEquals($category->getCategoryId(), $book->getCategory()->getCategoryId());
+        $this->assertEquals($category->getCategoryId(), $book->getCategory()?->getCategoryId());
     }
 
     #[DataProvider('getUseRefetchObjectMethodProdiver')]
-    public function testOneObjectWithClearAndCollection($useRefetchObjectMethod): void
+    public function testOneObjectWithClearAndCollection(bool $useRefetchObjectMethod): void
     {
         /** @var Book $book */
         $book = $this->em->getRepository(Book::class)->find(9);
@@ -204,7 +209,7 @@ class RefetchManagerTest extends AbstractTestCase
     }
 
     #[DataProvider('getUseRefetchObjectMethodProdiver')]
-    public function testChangesBeforeClearNotFlushed($useRefetchObjectMethod): void
+    public function testChangesBeforeClearNotFlushed(bool $useRefetchObjectMethod): void
     {
         $book = $this->createObjectInTestRefetchChangesNotFlushed();
         $oldTitle = $book->getTitle();
@@ -235,12 +240,12 @@ class RefetchManagerTest extends AbstractTestCase
     protected function updateObjectInTestRefetchChangesNotFlushed(Book $book, string $oldTitle): void
     {
         $book->setTitle($oldTitle.'2');
-        $this->assertEquals(1, $book->getCategory()->getCategoryId());
+        $this->assertEquals(1, $book->getCategory()?->getCategoryId());
         /** @var Category $newCategory */
         $newCategory = $this->em->getRepository(Category::class)->find(2);
         $this->assertNotNull($newCategory);
         $book->setCategory($newCategory);
-        $this->assertEquals(2, $book->getCategory()->getCategoryId());
+        $this->assertEquals(2, $book->getCategory()?->getCategoryId());
         $this->assertCount(3, $book->getAuthors());
         /** @var Author $newAuthor */
         $newAuthor = $this->em->getRepository(Author::class)->find(4);
@@ -252,13 +257,13 @@ class RefetchManagerTest extends AbstractTestCase
     protected function checkObjectInTestRefetchChangesNotFlushed(Book $book, string $oldTitle, int $expectedInUnitOfWork): void
     {
         $this->assertEquals($oldTitle, $book->getTitle());
-        $this->assertEquals(1, $book->getCategory()->getCategoryId());
+        $this->assertEquals(1, $book->getCategory()?->getCategoryId());
         $this->assertCount(3, $book->getAuthors());
         $this->checkUnitOfWork($expectedInUnitOfWork, [$book, $book->getCategory()]);
     }
 
     #[DataProvider('getUseRefetchObjectMethodProdiver')]
-    public function testChangesAfterClearNotFlushed($useRefetchObjectMethod): void
+    public function testChangesAfterClearNotFlushed(bool $useRefetchObjectMethod): void
     {
         $book = $this->createObjectInTestRefetchChangesNotFlushed();
         $oldTitle = $book->getTitle();
@@ -278,7 +283,7 @@ class RefetchManagerTest extends AbstractTestCase
     }
 
     #[DataProvider('getUseRefetchObjectMethodProdiver')]
-    public function testInIterate($useRefetchObjectMethod): void
+    public function testInIterate(bool $useRefetchObjectMethod): void
     {
         $entityManager = $this->em;
 
@@ -337,7 +342,7 @@ class RefetchManagerTest extends AbstractTestCase
     }
 
     #[DataProvider('getUseRefetchObjectMethodProdiver')]
-    public function testNotManagedObject($useRefetchObjectMethod): void
+    public function testNotManagedObject(bool $useRefetchObjectMethod): void
     {
         /** @var Author $author1 */
         $author1 = $this->em->getRepository(Author::class)->find(1);
@@ -367,7 +372,7 @@ class RefetchManagerTest extends AbstractTestCase
     }
 
     #[DataProvider('getUseRefetchObjectMethodProdiver')]
-    public function testWithCompositePk($useRefetchObjectMethod): void
+    public function testWithCompositePk(bool $useRefetchObjectMethod): void
     {
         /** @var Sale $sale */
         $sale = $this->em->getRepository(Sale::class)->findOneBy([
@@ -382,12 +387,12 @@ class RefetchManagerTest extends AbstractTestCase
             $sale = $this->refetchManager->getObject($sale);
         }
 
-        $this->assertEquals(1, $sale->getBook()->getBookId());
+        $this->assertEquals(1, $sale->getBook()?->getBookId());
         $this->assertEquals(2019, $sale->getYear());
     }
 
     #[DataProvider('getUseRefetchObjectMethodProdiver')]
-    public function testWithBadObject($useRefetchObjectMethod): void
+    public function testWithBadObject(bool $useRefetchObjectMethod): void
     {
         $this->expectException(MappingException::class);
         $this->expectExceptionMessage('Class "stdClass" is not a valid entity or mapped super class');
@@ -400,7 +405,7 @@ class RefetchManagerTest extends AbstractTestCase
     }
 
     #[DataProvider('getUseRefetchObjectMethodProdiver')]
-    public function testWithDeletedEntity($useRefetchObjectMethod): void
+    public function testWithDeletedEntity(bool $useRefetchObjectMethod): void
     {
         /** @var Author $author */
         $author = $this->em->getRepository(Author::class)->find(2);
@@ -434,7 +439,9 @@ class RefetchManagerTest extends AbstractTestCase
         $this->assertEquals(LazyCriteriaCollection::class, $books::class);
         $this->assertEquals(1, $this->countObjectsInUnitOfWork());
         $this->assertCount(5, $books);
-        $firstTitle = $books->first()->getTitle();
+        $first = $books->first();
+        self::assertNotFalse($first);
+        $firstTitle = $first->getTitle();
         $this->assertEquals(6, $this->countObjectsInUnitOfWork());
     }
 
@@ -454,7 +461,9 @@ class RefetchManagerTest extends AbstractTestCase
         $this->assertEquals(LazyCriteriaCollection::class, $books::class);
         $this->assertEquals(0, $this->countObjectsInUnitOfWork());
         $this->assertCount(5, $books);
-        $firstTitle = $books->first()->getTitle();
+        $first = $books->first();
+        self::assertNotFalse($first);
+        $firstTitle = $first->getTitle();
         $this->assertEquals(6, $this->countObjectsInUnitOfWork());
     }
 
@@ -512,11 +521,12 @@ class RefetchManagerTest extends AbstractTestCase
         $this->assertEquals(18, $count);
     }
 
-    public static function getUseRefetchObjectMethodProdiver()
+    /**
+     * @return iterable<array{bool}>
+     */
+    public static function getUseRefetchObjectMethodProdiver(): iterable
     {
-        return [
-            [true],
-            [false],
-        ];
+        yield [true];
+        yield [false];
     }
 }

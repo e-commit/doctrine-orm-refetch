@@ -14,7 +14,9 @@ declare(strict_types=1);
 namespace Ecommit\DoctrineOrmRefetch\Tests\App\Fixtures;
 
 use Doctrine\Persistence\ObjectManager;
+use Ecommit\DoctrineOrmRefetch\Tests\App\Entity\Author;
 use Ecommit\DoctrineOrmRefetch\Tests\App\Entity\Book;
+use Ecommit\DoctrineOrmRefetch\Tests\App\Entity\Category;
 
 class BookFixtureLoader extends AbstractFixture
 {
@@ -39,10 +41,10 @@ class BookFixtureLoader extends AbstractFixture
             $book->setBookId($i);
             $book->setTitle($faker->title);
             $categoryId = ($i % 2) + 1;
-            $book->setCategory($this->getReference('category_'.$categoryId));
+            $book->setCategory($this->getReference('category_'.$categoryId, Category::class));
 
             foreach ($authorIdsByBookId[$i] as $authorId) {
-                $book->addAuthor($this->getReference('author_'.$authorId));
+                $book->addAuthor($this->getReference('author_'.$authorId, Author::class));
             }
 
             $manager->persist($book);

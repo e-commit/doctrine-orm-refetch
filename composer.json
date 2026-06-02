@@ -27,9 +27,11 @@
         "doctrine/data-fixtures": "^1.4.1",
         "fakerphp/faker": "^1.9",
         "friendsofphp/php-cs-fixer": "^3.88",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan": "^2.2",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpunit/phpunit": "^10.0",
-        "symfony/cache": "*",
-        "vimeo/psalm": "^5"
+        "symfony/cache": "*"
     },
     "extra": {
         "branch-alias": {
@@ -37,6 +39,9 @@
         }
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
     }
 }

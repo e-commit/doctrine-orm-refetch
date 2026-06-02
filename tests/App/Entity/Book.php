@@ -23,22 +23,28 @@ class Book
 {
     #[ORM\Id]
     #[ORM\Column(type: 'integer', name: 'book_id')]
-    protected $bookId;
+    protected int $bookId;
 
     #[ORM\Column(type: 'string', length: 255)]
-    protected $title;
+    protected string $title;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'books')]
     #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'category_id', nullable: false)]
-    protected $category;
+    protected ?Category $category = null;
 
+    /**
+     * @var Collection<int, Author>
+     */
     #[ORM\ManyToMany(targetEntity: Author::class, inversedBy: 'books')]
     #[ORM\JoinColumn(name: 'book_id', referencedColumnName: 'book_id')]
     #[ORM\InverseJoinColumn(name: 'author_id', referencedColumnName: 'author_id')]
-    protected $authors;
+    protected Collection $authors;
 
+    /**
+     * @var Collection<int, Sale>
+     */
     #[ORM\OneToMany(targetEntity: Sale::class, mappedBy: 'book')]
-    protected $sales;
+    protected Collection $sales;
 
     public function __construct()
     {
@@ -77,7 +83,7 @@ class Book
         return $this;
     }
 
-    public function getCategory(): Category
+    public function getCategory(): ?Category
     {
         return $this->category;
     }
@@ -100,6 +106,9 @@ class Book
         return $this;
     }
 
+    /**
+     * @return Collection<int, Author>
+     */
     public function getAuthors(): Collection
     {
         return $this->authors;
@@ -121,6 +130,9 @@ class Book
         return $this;
     }
 
+    /**
+     * @return Collection<int, Sale>
+     */
     public function getSales(): Collection
     {
         return $this->sales;

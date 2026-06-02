@@ -37,11 +37,25 @@ final class RefetchManager
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * @template T of object
+     *
+     * @param T $object
+     *
+     * @return-out T
+     */
     public function refetchObject(object &$object): void
     {
         $object = $this->getObject($object);
     }
 
+    /**
+     * @template T of object
+     *
+     * @param T $object
+     *
+     * @return T
+     */
     public function getObject(object $object): object
     {
         $classMetadata = $this->getObjectMetadata($object);
@@ -55,7 +69,11 @@ final class RefetchManager
     }
 
     /**
-     * @psalm-param class-string $class
+     * @template T of object
+     *
+     * @param class-string<T> $class
+     *
+     * @return Collection<int, T>
      */
     public function getCollectionFromCriteria(Criteria $criteria, string $class): Collection
     {
@@ -67,6 +85,13 @@ final class RefetchManager
         return $this->entityManager;
     }
 
+    /**
+     * @template T of object
+     *
+     * @param T $object
+     *
+     * @return ClassMetadata<T>
+     */
     protected function getObjectMetadata(object $object): ClassMetadata
     {
         return $this->entityManager->getClassMetadata($object::class);
@@ -74,7 +99,6 @@ final class RefetchManager
 
     protected function getIdentifierFlattener(): IdentifierFlattener
     {
-        /** @psalm-suppress InvalidArgument */
         return new IdentifierFlattener($this->entityManager->getUnitOfWork(), $this->entityManager->getMetadataFactory());
     }
 }

@@ -23,13 +23,16 @@ class Category
 {
     #[ORM\Id]
     #[ORM\Column(type: 'integer', name: 'category_id')]
-    protected $categoryId;
+    protected int $categoryId;
 
     #[ORM\Column(type: 'string', length: 255)]
-    protected $name;
+    protected string $name;
 
+    /**
+     * @var Collection<int, Book>
+     */
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'category')]
-    protected $books;
+    protected Collection $books;
 
     public function __construct()
     {
@@ -76,6 +79,9 @@ class Category
         return $this;
     }
 
+    /**
+     * @return Collection<int, Book>
+     */
     public function getBooks(): Collection
     {
         return $this->books;

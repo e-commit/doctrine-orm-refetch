@@ -15,12 +15,17 @@ namespace Ecommit\DoctrineOrmRefetch\Exception;
 
 class EntityNotFoundException extends \Exception implements ExceptionInterface
 {
+    /**
+     * @param array<string, mixed> $id
+     */
     public static function fromClassNameAndIdentifier(string $className, array $id): self
     {
         $ids = [];
 
         foreach ($id as $key => $value) {
-            $ids[] = $key.'('.$value.')';
+            if (\is_scalar($value) || $value instanceof \Stringable) {
+                $ids[] = $key.'('.(string) $value.')';
+            }
         }
 
         return new self(

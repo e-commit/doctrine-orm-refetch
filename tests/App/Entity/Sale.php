@@ -22,14 +22,14 @@ class Sale
     #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: 'sales')]
     #[ORM\JoinColumn(name: 'book_id', referencedColumnName: 'book_id', nullable: false)]
-    protected $book;
+    protected ?Book $book = null;
 
     #[ORM\Id]
     #[ORM\Column(type: 'smallint')]
-    protected $year;
+    protected int $year;
 
     #[ORM\Column(type: 'integer')]
-    protected $countSales;
+    protected int $countSales;
 
     public function setBook(?Book $book = null): self
     {
@@ -38,7 +38,7 @@ class Sale
         return $this;
     }
 
-    public function getBook(): Book
+    public function getBook(): ?Book
     {
         return $this->book;
     }

@@ -23,16 +23,19 @@ class Author
 {
     #[ORM\Id]
     #[ORM\Column(type: 'integer', name: 'author_id')]
-    protected $authorId;
+    protected int $authorId;
 
     #[ORM\Column(type: 'string', length: 255)]
-    protected $firstName;
+    protected string $firstName;
 
     #[ORM\Column(type: 'string', length: 255)]
-    protected $lastName;
+    protected string $lastName;
 
+    /**
+     * @var Collection<int, Book>
+     */
     #[ORM\ManyToMany(targetEntity: Book::class, mappedBy: 'authors')]
-    protected $books;
+    protected Collection $books;
 
     public function __construct()
     {
@@ -91,6 +94,9 @@ class Author
         return $this;
     }
 
+    /**
+     * @return Collection<int, Book>
+     */
     public function getBooks(): Collection
     {
         return $this->books;

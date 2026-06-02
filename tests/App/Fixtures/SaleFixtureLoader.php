@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ecommit\DoctrineOrmRefetch\Tests\App\Fixtures;
 
 use Doctrine\Persistence\ObjectManager;
+use Ecommit\DoctrineOrmRefetch\Tests\App\Entity\Book;
 use Ecommit\DoctrineOrmRefetch\Tests\App\Entity\Sale;
 
 class SaleFixtureLoader extends AbstractFixture
@@ -35,7 +36,7 @@ class SaleFixtureLoader extends AbstractFixture
 
             foreach ($years as $year) {
                 $sale = new Sale();
-                $sale->setBook($this->getReference('book_'.$i));
+                $sale->setBook($this->getReference('book_'.$i, Book::class));
                 $sale->setYear($year);
                 $sale->setCountSales(random_int(1, 5000000));
 

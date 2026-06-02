@@ -29,11 +29,14 @@ abstract class AbstractTestCase extends TestCase
         return $count;
     }
 
+    /**
+     * @param iterable<?object> $objects
+     */
     protected function unitOfWorkContainsObjects(iterable $objects): bool
     {
         $unitOfWork = Doctrine::getEntityManager()->getUnitOfWork();
         foreach ($objects as $object) {
-            if (UnitOfWork::STATE_MANAGED !== $unitOfWork->getEntityState($object)) {
+            if (null !== $object && UnitOfWork::STATE_MANAGED !== $unitOfWork->getEntityState($object)) {
                 return false;
             }
         }
@@ -41,6 +44,9 @@ abstract class AbstractTestCase extends TestCase
         return true;
     }
 
+    /**
+     * @param iterable<?object> $expectedEntities
+     */
     protected function checkUnitOfWork(int $expectedCountEntities, iterable $expectedEntities): void
     {
         $this->assertEquals($expectedCountEntities, $this->countObjectsInUnitOfWork());
